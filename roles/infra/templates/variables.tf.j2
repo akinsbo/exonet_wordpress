@@ -2,17 +2,17 @@
 
 variable "vpc_region" {
   description = "AWS region"
-  default     = "eu-west-1"
+  default     = "{{region}}"
 }
 
 variable "vpc_name" {
-  description = "VPC for mbshow"
-  default     = "mbshow_vpc"
+  description = "VPC for {{project}}"
+  default     = "{{project}}_vpc"
 }
 
 variable "vpc_cidr_block" {
   description = "The CIDR block for the VPC"
-  default     = "10.0.0.0/16"
+  default     = {{vpc_cidr_block}}
 }
 
 
@@ -26,7 +26,7 @@ variable "security_group" {
 variable "sg_name" {
   description = "Security group for private traffic"
   type        = string
-  default     = "mbshow_sg"
+  default     = "{{project}}_sg"
 }
 
 
@@ -34,54 +34,42 @@ variable "sg_name" {
 variable "subnet1_name" {
   description = "Subnet for webserver"
   type        = string
-  default     = "mbshow_main_subnet"
+  default     = "{{project}}_main_subnet"
 }
 
-variable "subnet1_public_cidr" {
+variable "subnet1_public_sg_cidr" {
   description = "Security group for public traffic"
   type        = list(string)
-  default     = ["0.0.0.0/0"]
+  default     = [{{subnet1_public_sg_cidr}}]
 }
 
-variable "subnet1_private_cidr" {
+variable "subnet1_private_sg_cidr" {
   description = "Security group for private traffic"
   type        = list(string)
-  default     = ["10.0.1.0/24"]
+  default     = [{{subnet1.private_sg_cidr}}]
 }
 
 variable "subnet1_cidr" {
   description = "The cidr of the subnet"
   type        = string
-  default     = "10.0.1.0/24"
+  default     = {{subnet1.private_sg_cidr}}
 }
 
 variable "subnet1_az" {
   description = "Availability zones for the subnet"
   type        = string
-  default     = "eu-west-1a"
+  default     = "{{region}}a"
 }
 
 # Metadata
-variable "env" {
-  description = "Environment"
-  type        = string
-  default     = "prod"
-}
-
-variable "author" {
-  description = "Name of Author"
-  type        = string
-  default     = "Olaolu Akinsete"
-}
-
-variable "email" {
-  description = "Email of Author"
-  type        = string
-  default     = "akinsbo@gmail.com"
-}
-
-variable "tags" {
+variable "default_tags" {
   description = "Metadata"
-  type = list(string)
-  default = 
+  type        = map(string)
+  default = {
+    Name                  = "{{project}}_vpc"
+    Environment           = "prod"
+    Terraform_provisioned = "true"
+    Author=  "{{author.name}}",
+    Contact= "{{author.email}}",
+  }
 }

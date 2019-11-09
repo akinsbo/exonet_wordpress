@@ -1,0 +1,14 @@
+
+author: 
+  name: "Olaolu Akinsete"
+  email: "akinsbo@gmail.com"
+
+project: "exonet_wordpress"
+
+region: "eu-central-1" # frankfurt
+
+subnet1:
+  private_sg_cidr: "10.0.1.0/24"
+  public_sg_cidr: "0.0.0.0/0"
+
+vpc_cidr_block: "10.0.0.0/16"

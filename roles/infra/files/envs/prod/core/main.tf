@@ -24,8 +24,6 @@ resource "aws_instance" "ec2_instance" {
   security_groups = "${module.security_groups.id}"
 
   tags = "${merge(map(
-    "Author", "Olaolu Akinsete",
-    "Contact", "akinsbo@gmail.com",
     "Resource", "instance"
   ), var.default_tags)}"
 }
@@ -46,6 +44,6 @@ module "security_groups" {
 
   vpc_id              = "${module.vpc.id}"
   sg_name             = "${var.sg_name}"
-  subnet_public_cidr  = "${var.subnet1_public_cidr}"
-  subnet_private_cidr = "${var.subnet1_private_cidr}"
+  subnet_public_cidr  = "${var.subnet1_sg_public_cidr}"
+  subnet_private_cidr = "${var.subnet1_sg_private_cidr}"
 }
