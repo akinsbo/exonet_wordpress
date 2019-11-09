@@ -1,0 +1,3 @@
+---
+# defaults file for aws_infra
+terraform_path: "{{role_path}}/files"

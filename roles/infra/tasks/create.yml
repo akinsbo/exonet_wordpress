@@ -1,0 +1,6 @@
+- name: Apply terraform files
+  terraform:
+    # variable {{terraform_path}} is defined in role's default vars
+    project_path: "{{terraform_path}}"
+    state: present
+    force_init: yes

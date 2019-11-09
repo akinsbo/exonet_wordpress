@@ -1,0 +1,14 @@
+# ansible
+*.retry
+
+# editor
+.vscode
+
+# others
+.DS_Store
+.todo
+
+# terraform
+.terraform
+*.tfstate
+*.tfstate.backup
