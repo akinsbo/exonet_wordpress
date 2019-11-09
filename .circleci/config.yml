@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: debian:stretch
+
+    steps:
+      - checkout
+
+      - run:
+          name: starting...
+          command: echo Starting script.
+      
+      - run:
+          name: start
+          command: make start
