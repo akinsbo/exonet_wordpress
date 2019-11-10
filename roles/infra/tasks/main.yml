@@ -6,9 +6,12 @@
 
 - name: Generate terraform files
   template:
-    src: "{{role_path}}/templates/variables.tf.j2"
+    src: "{{item.src}}"
     dest: "{{terraform_path}}"
     mode: 0644
+  with_items:
+    - { src: '{{role_path}}/templates/variables.tf.j2', dest: '{{terraform_path}}/envs/prod/core' }
+    - { src: '{{role_path}}/templates/provider.tf.j2', dest: '{{terraform_path}}' }
 
 - name: Request ansible version
   debug:

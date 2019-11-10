@@ -1,7 +1,7 @@
 version: 2
 jobs:
 
-  build:
+  build_ec2:
     docker:
       - image: hashicorp/terraform
 
