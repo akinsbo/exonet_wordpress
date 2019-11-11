@@ -7,7 +7,7 @@ jobs:
       TAG: latest
       IMAGE_ADDRESS: $AWS_USER_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       IMAGE_REPO: $IMAGE_ADDRESS/$APP
-      
+
     docker:
       - image: docker:19.03
       # Setting an Environment Variables for app
@@ -36,7 +36,7 @@ jobs:
           command: |
             echo 'exporting docker-image'
             echo $IMAGE_ADDRESS
-            docker login -u AWS --password-stdin $AWS_USER_SERVICE_KEY $AWS_USER_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+            docker login -u AWS --password-stdin $AWS_USER_SERVICE_KEY ${AWS_USER_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
             # docker build -t $APP:$TAG $CIRCLE_WORKING_DIRECTORY/docker/Dockerfile
             # docker tag ${APP}:${TAG} ${IMAGE_ADDRESS}/${ORG}:${TAG}
             # docker push ${IMAGE_REPO}:${TAG}
