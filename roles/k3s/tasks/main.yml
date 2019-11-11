@@ -1,0 +1,3 @@
+---
+- name: install k3s
+  command:  "curl -sfL https://get.k3s.io | sh -"

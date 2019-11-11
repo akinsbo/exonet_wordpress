@@ -1,0 +1,70 @@
+---
+  - name: Get list of all users
+    shell: "getent passwd | awk -F: '$3 > 1000 {print $1}'"
+    changed_when: false
+    register: users
+
+  - name: Ensure all unrequested users are removed
+    user:
+      name: "{{ item }}"
+      state: absent
+      remove: yes
+    with_items: "{{ users.stdout_lines }}"
+    when: item not in ssh_user.default_users && item not in ssh_user.admin_users
+
+  - include_tasks: temp_pass.yml
+
+  - name: Ensure required admin users are created and added to sudo group
+    become: yes
+    user:
+      name: "{{ item }}"
+      groups: "{{ssh_user.admin_groups}}, sudo" 
+      append: yes
+      create_home: yes
+      password: "{{user_temp_encrypted_pass.stdout}}"
+      state: present
+    with_items: "{{ ssh_user.admin_users }}"
+    tags:
+      - user
+
+  - name: Ensure other group users are added to their respective groups
+    become: yes
+    user:
+      name: "{{ item }}"
+      groups: "{{ssh_user.developer_groups}}, sudo" 
+      append: yes
+      create_home: yes
+      password: "{{user_temp_encrypted_pass.stdout}}"
+      state: present
+    with_items: "{{ ssh_user.developer_users }}"
+    tags:
+      - user
+
+  - name: Ensure new user ssh key is placed in remote authorized key folder
+    become: yes
+    authorized_key:
+      user: "{{my_ssh_user.name}}"
+      state: present
+      manage_dir: true
+      key: "{{ lookup('file','lookup('env','HOME')/.ssh/' ~ my_ssh_user.name ~'.pub')}}"
+    tags:
+      - ssh
+
+  - name: Disable Password Authentication
+    lineinfile:
+        dest=/etc/ssh/sshd_config
+        regexp='^PasswordAuthentication'
+        line="PasswordAuthentication no"
+        state=present
+        backup=yes
+
+  - name: Disable Root Login
+      lineinfile:
+            dest=/etc/ssh/sshd_config
+            regexp='^PermitRootLogin'
+            line="PermitRootLogin no"
+            state=present
+            backup=yes
+
+    notify:
+    - restart ssh

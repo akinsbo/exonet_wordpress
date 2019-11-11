@@ -7,6 +7,8 @@
 # others
 .DS_Store
 .todo
+.dustbin
+run_commit.sh
 
 # terraform
 .terraform

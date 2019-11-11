@@ -1,0 +1,23 @@
+  # --------------user--------------------
+  # - include_tasks: mng_group/create.yml
+---
+  - name: Ensure groups admin and developer are added
+    become: yes
+    group:
+      name: "{{ item }}"
+      state: present
+    with_items: "{{ssh_user_groups}}"
+
+  # - include_tasks: mng_user/create.yml
+  # --------------ssh_key--------------------
+    # Generate an SSH Key Pair on localhost
+  - name: Ensure sshkey is created
+    mng_sshkey/create.yml
+
+  - include_tasks: mng_sshkey/authorize.yml
+  - include_tasks: mng_sshkey/configure.yml
+  - include_tasks: mng_sshkey/test.yml
+  # --------------ufw--------------------
+  - include_tasks: mng_ufw/setup.yml
+  - include_tasks: mng_ufw/allow.yml
+  - include_tasks: mng_ufw/rate-limit.yml

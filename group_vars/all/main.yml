@@ -12,3 +12,18 @@ subnet1:
   public_sg_cidr: "0.0.0.0/0"
 
 vpc_cidr_block: "10.0.0.0/16"
+
+ssh_user_groups: 
+  - admin
+  - developer
+  - exonet_group
+
+ssh_user:
+  - admin_users: ['exonet_user']
+  - developer_users: ['Olaolu', 'Florian']
+  - admin_groups: ['admin, exonet_group']
+  - developer_groups: ['developer']
+
+terraform:
+  - version: 0.12
+  - aws_provider_version: 2.33

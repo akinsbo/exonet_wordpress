@@ -1,0 +1,2 @@
+---
+- name: Ensure Terraform version is installed if not present

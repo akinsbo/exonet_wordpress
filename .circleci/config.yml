@@ -1,10 +1,39 @@
 version: 2
 jobs:
+  build:
+    docker:
+      - image: golang:1.6.4-jessie
+      # Setting an Environment Variables for app
+        environment:
+          ORG: exonet
+          APP: ${ORG}/wordpress
+          TAG: latest
+          IMAGE_REPO: 628076641390.dkr.ecr.eu-central-1.amazonaws.com/${APP}
+
+    steps: # steps that comprise the `build` job
+      - checkout # check out source code to working directory
+
+      - setup_remote_docker:  
+          version: 18.06.0-ce
+          docker_layer_caching: true 
+          
+      # Run a step to setup an environment variable.
+      - run: 
+          name: "Setup custom environment variables"
+          command: |
+            echo 'exporting docker-image'
+            docker login -u AWS -p ${AWS_SECRET_ACCESS_KEY} https://${AWS_ACCESS_KEY_ID}.dkr.ecr.us-east-1.amazonaws.com
+            docker build -t ${APP}:${TAG} $CIRCLE_WORKING_DIRECTORY/docker/Dockerfile
+            docker tag ${APP}:${TAG} 628076641390.dkr.ecr.eu-central-1.amazonaws.com/${ORG}:${TAG}
+            docker push ${IMAGE_REPO}:${TAG}
 
   build_ec2:
     docker:
-      - image: hashicorp/terraform
-
+      - image: ansible/ansible:ubuntu1604
+      # - image: ${IMAGE_REPO}:${TAG}
+      #   aws_auth:
+      #     aws_access_key_id: $AWS_ACCESS_KEY_ID 
+      #     aws_secret_access_key: $AWS_SECRET_ACCESS_KEY
     steps:
       - run:
           name: Install Ansible
