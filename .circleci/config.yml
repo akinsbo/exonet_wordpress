@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: golang:1.13-stretch
+      - image: docker:19.03ß
       # Setting an Environment Variables for app
         environment:
           ORG: exonet
