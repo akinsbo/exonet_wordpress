@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:19.03ß
+      - image: docker:19.03
       # Setting an Environment Variables for app
         environment:
           ORG: exonet
