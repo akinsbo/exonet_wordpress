@@ -27,6 +27,7 @@ jobs:
           name: "Setup custom environment variables"
           command: |
             echo 'exporting docker-image'
+            printenv
             echo $IMAGE_ADDRESS
             # docker login -u AWS --password-stdin $AWS_USER_SERVICE_KEY $IMAGE_ADDRESS
             # docker build -t $APP:$TAG $CIRCLE_WORKING_DIRECTORY/docker/Dockerfile
