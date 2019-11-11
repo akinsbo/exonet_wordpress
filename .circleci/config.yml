@@ -35,8 +35,8 @@ jobs:
           name: "Setup custom environment variables"
           command: |
             echo 'exporting docker-image'
-            echo $IMAGE_ADDRESS
-            docker login -u AWS --password-stdin $AWS_USER_SERVICE_KEY ${AWS_USER_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+            echo ${AWS_USER_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
+            # docker login -u AWS --password-stdin $AWS_USER_SERVICE_KEY ${AWS_USER_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
             # docker build -t $APP:$TAG $CIRCLE_WORKING_DIRECTORY/docker/Dockerfile
             # docker tag ${APP}:${TAG} ${IMAGE_ADDRESS}/${ORG}:${TAG}
             # docker push ${IMAGE_REPO}:${TAG}
