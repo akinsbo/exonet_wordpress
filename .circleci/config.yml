@@ -22,7 +22,7 @@ jobs:
           name: "Setup custom environment variables"
           command: |
             echo 'exporting docker-image'
-            docker login -u ${AWS_USER} --password-stdin ${AWS_SECRET_ACCESS_KEY} https://${AWS_ACCESS_KEY_ID}.dkr.ecr.us-east-1.amazonaws.com
+            docker login -u ${AWS_USER} --password-stdin ${AWS_SECRET_ACCESS_KEY} https://${AWS_ACCESS_KEY_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com
             docker build -t ${APP}:${TAG} $CIRCLE_WORKING_DIRECTORY/docker/Dockerfile
             docker tag ${APP}:${TAG} 628076641390.dkr.ecr.eu-central-1.amazonaws.com/${ORG}:${TAG}
             docker push ${IMAGE_REPO}:${TAG}
