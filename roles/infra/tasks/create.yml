@@ -1,25 +1,35 @@
-# tasks file for aws_infra
+- import_tasks: install_terraform.yml
+
+# - name: Generate terraform files
+#   template:
+#     src: "{{item.src}}"
+#     dest: "{{item.dest}}"
+#     mode: 0644
+#   with_items:
+#     - { src: '{{role_path}}/templates/variables.tf.j2', dest: '{{terraform_path}}/envs/prod/core/variables.tf' }
+#     - { src: '{{role_path}}/templates/provider.tf.j2', dest: '{{terraform_path}}/provider.tf' }
+#     - { src: '{{role_path}}/templates/main.tf.j2', dest: '{{terraform_path}}/main.tf' }
+#     - { src: '{{role_path}}/templates/prod-main.tf.j2', dest: '{{terraform_path}}//envs/prod/core/main.tf' }
+
+# - name: Request ansible version
+#   debug:
+#     msg: For terraform module force init to work, please ensure you are running ansible > or = 2.7
+
+# - name: Apply terraform files
+#   terraform:
+#     project_path: "{{terraform_path}}"
+#     state: present
+#     force_init: yes
+#   register: myregistered_grep_output
+
 # - name: Set terraform path
 #   set_fact:
-#     terraform_path: "{{role_path}}/files"
+#     host_ip: "{{myregistered_grep_output}}.stdout.module.prod.aws_eip.ip_for_env/files"
 
-- name: Generate terraform files
-  template:
-    src: "{{item.src}}"
-    dest: "{{item.dest}}"
-    mode: 0644
-  with_items:
-    - { src: '{{role_path}}/templates/variables.tf.j2', dest: '{{terraform_path}}/envs/prod/core/variables.tf' }
-    - { src: '{{role_path}}/templates/provider.tf.j2', dest: '{{terraform_path}}/provider.tf' }
-    - { src: '{{role_path}}/templates/main.tf.j2', dest: '{{terraform_path}}/main.tf' }
-    - { src: '{{role_path}}/templates/prod-main.tf.j2', dest: '{{terraform_path}}//envs/prod/core/main.tf' }
+# # - name: Get terraform output
+# #   debug:
+# #     msg: .outputs.MyOutputName.value
 
-- name: Request ansible version
-  debug:
-    msg: For terraform module force init to work, please ensure you are running ansible > or = 2.7
-
-- name: Apply terraform files
-  terraform:
-    project_path: "{{terraform_path}}"
-    state: present
-    force_init: yes
+# - name: Get terraform output
+#   debug:
+#     msg: "{{host_ip}}"

@@ -22,7 +22,6 @@ resource "aws_instance" "ec2_instance" {
   subnet_id       = "${module.subnet_public.subnet_id}"
   key_name        = "${module.subnet_public.key_pair}"
   security_groups = ["${module.security_groups.security_group_id}"]
-  delete_on_termination = false
 
   tags = "${merge(map(
     "Resource", "instance"

@@ -4,4 +4,3 @@
 
 - import_tasks: delete.yml
   tags: [delete, destroy, stop]
-

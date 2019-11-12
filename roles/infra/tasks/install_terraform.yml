@@ -1,2 +1,25 @@
 ---
-- name: Ensure Terraform version is installed if not present
+- name: Get Terraform version. Install if not present
+  command: |
+    terraform --version
+  register: terraform_version
+
+- name: Print Terraform version > 0.12
+  debug:
+    msg: "{{terraform_version.stdout | regex_search('(d+)') }}"
+
+- name: Get Terraform version. Install if not present
+  command: |
+    terraform --version
+  register: terraform_version
+
+- name: "Ensure Terraform version > 0.12 is installed"
+  become: true
+  unarchive:
+    src: "{{ module_linux_url }}"
+    dest: /usr/local/bin
+    owner: "{{local_ansible_user}}"
+    group: "{{local_ansible_group}}"
+    remote_src: yes
+    mode: 0755
+  when: (terraform_version.stdout | regex_search('(\d+\.\d+)') < 0.12)
