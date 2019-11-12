@@ -5,7 +5,9 @@ author:
 
 project: "exonet_wordpress"
 
+# Update ami if updating region as AMI is region based
 region: "eu-central-1" # frankfurt
+ami: ami-0cc0a36f626a4fdf5
 
 subnet1:
   private_sg_cidr: "10.0.1.0/24"
@@ -19,11 +21,13 @@ ssh_user_groups:
   - exonet_group
 
 ssh_user:
-  - admin_users: ['exonet_user']
-  - developer_users: ['Olaolu', 'Florian']
-  - admin_groups: ['admin, exonet_group']
-  - developer_groups: ['developer']
+  admin_users: ['exonet_user']
+  developer_users: ['Olaolu', 'Florian']
+  admin_groups: ['admin, exonet_group']
+  developer_groups: ['developer']
 
 terraform:
-  - version: 0.12
-  - aws_provider_version: 2.33
+  aws_provider_version: 2.33
+  version: 0.12
+
+terraform_path: "{{role_path}}/files"

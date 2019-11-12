@@ -21,3 +21,11 @@ Stop with:
     make stop
 
 ```
+
+## Changing Terraform file path
+
+To change the path of execution of the terraform insfrastructure, change the path in
+
+## Future optimizations
+
+If not t2-micro, consider EBS-optimizing it.

@@ -2,17 +2,17 @@
 
 variable "vpc_region" {
   description = "AWS region"
-  default     = "{{region}}"
+  default     = "eu-central-1"
 }
 
 variable "vpc_name" {
-  description = "VPC for {{project}}"
-  default     = "{{project}}_vpc"
+  description = "VPC for exonet_wordpress"
+  default     = "exonet_wordpress_vpc"
 }
 
 variable "vpc_cidr_block" {
   description = "The CIDR block for the VPC"
-  default     = "{{vpc_cidr_block}}"
+  default     = "10.0.0.0/16"
 }
 
 
@@ -26,7 +26,7 @@ variable "security_group" {
 variable "sg_name" {
   description = "Security group for private traffic"
   type        = string
-  default     = "{{project}}_sg"
+  default     = "exonet_wordpress_sg"
 }
 
 
@@ -34,31 +34,31 @@ variable "sg_name" {
 variable "subnet1_name" {
   description = "Subnet for webserver"
   type        = string
-  default     = "{{project}}_main_subnet"
+  default     = "exonet_wordpress_main_subnet"
 }
 
 variable "subnet1_public_sg_cidr" {
   description = "Security group for public traffic"
   type        = list(string)
-  default     = ["{{subnet1.public_sg_cidr}}"]
+  default     = ["0.0.0.0/0"]
 }
 
 variable "subnet1_private_sg_cidr" {
   description = "Security group for private traffic"
   type        = list(string)
-  default     = ["{{subnet1.private_sg_cidr}}"]
+  default     = ["10.0.1.0/24"]
 }
 
 variable "subnet1_cidr" {
   description = "The cidr of the subnet"
   type        = string
-  default     = "{{subnet1.private_sg_cidr}}"
+  default     = "10.0.1.0/24"
 }
 
 variable "subnet1_az" {
   description = "Availability zones for the subnet"
   type        = string
-  default     = "{{region}}a"
+  default     = "eu-central-1a"
 }
 
 # Metadata
@@ -66,10 +66,10 @@ variable "default_tags" {
   description = "Metadata"
   type        = map(string)
   default = {
-    Name                  = "{{project}}_vpc"
+    Name                  = "exonet_wordpress_vpc"
     Environment           = "prod"
     Terraform_provisioned = "true"
-    Author=  "{{author.name}}",
-    Contact= "{{author.email}}",
+    Author=  "Olaolu Akinsete",
+    Contact= "akinsbo@gmail.com",
   }
 }

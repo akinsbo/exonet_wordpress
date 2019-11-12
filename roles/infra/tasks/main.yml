@@ -1,23 +1,4 @@
 ---
-# tasks file for aws_infra
-- name: Set terraform path
-  set_fact:
-    terraform_path: "{{role_path}}/files"
-
-- name: Generate terraform files
-  template:
-    src: "{{item.src}}"
-    dest: "{{terraform_path}}"
-    mode: 0644
-  with_items:
-    - { src: '{{role_path}}/templates/variables.tf.j2', dest: '{{terraform_path}}/envs/prod/core/variables.tf' }
-    - { src: '{{role_path}}/templates/provider.tf.j2', dest: '{{terraform_path}}/provider.tf' }
-    - { src: '{{role_path}}/templates/provider.tf.j2', dest: '{{terraform_path}}/main.tf' }
-
-- name: Request ansible version
-  debug:
-    msg: For terraform module force init to work, please ensure you are running ansible > or = 2.7
-
 - import_tasks: create.yml
   tags: [create]
 
