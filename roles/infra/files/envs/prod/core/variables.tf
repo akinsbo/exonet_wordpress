@@ -73,3 +73,34 @@ variable "default_tags" {
     Contact= "akinsbo@gmail.com",
   }
 }
+
+
+variable "ssh_public_key_path" {
+  description = "Public key path"
+  type        = string
+  default     = "~/ssh/public_keys/exonet"
+}
+
+variable "ssh_key_algorithm" {
+  description = "Ssh key algorithm to generate keys with"
+  type        = string
+  default     = "RSA"
+}
+
+variable "private_key_extension" {
+  description = "Extension of generated private key"
+  type        = string
+  default     = ".pem"
+}
+
+variable "public_key_extension" {
+  description = "Extension of generated public key"
+  type        = string
+  default     = ".pub"
+}
+
+variable "chmod_command" {
+  description = "Chmod command"
+  type        = string
+  default     = "600"
+}

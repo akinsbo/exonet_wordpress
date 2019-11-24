@@ -9,6 +9,12 @@ project: "exonet_wordpress"
 region: "eu-central-1" # frankfurt
 ami: ami-0cc0a36f626a4fdf5
 
+container:
+  number: 4
+  name: docker
+  image: ubuntuz
+  command: sleep 1m
+
 subnet1:
   private_sg_cidr: "10.0.1.0/24"
   public_sg_cidr: "0.0.0.0/0"
@@ -21,13 +27,23 @@ ssh_user_groups:
   - exonet_group
 
 ssh_user:
+  default_user: ubuntu
   admin_users: ['exonet_user']
   developer_users: ['Olaolu', 'Florian']
   admin_groups: ['admin, exonet_group']
   developer_groups: ['developer']
+
+
+ssh_public_key_path: "~/ssh/public_keys/exonet"
+ssh_key_algorithm: RSA
+private_key_extension: .pem
+public_key_extension: .pub
+chmod_command: 600
 
 terraform:
   aws_provider_version: 2.33
   version: 0.12
 
 terraform_path: "{{role_path}}/files"
+
+tfstate_backend_path: "{{role_path}}/files/terraform.tfstate"

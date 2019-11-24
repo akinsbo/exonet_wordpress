@@ -1,0 +1,15 @@
+- name: Ensure Docker Container is built
+    # Pull image specified by variable default_image from the Docker Hub
+- name: Pull default Docker image
+  docker_image:
+    name: "{{ container.image }}"
+    source: pull
+
+    # Creates the number of containers defined by the variable create_containers, using default values
+- name: Create default containers
+  docker_container:
+    name: "{{ container.name }}{{ item }}"
+    image: "{{ container.image }}"
+    command: "{{ container.command }}"
+    state: present
+  with_sequence: count={{ container.num }}

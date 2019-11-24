@@ -73,3 +73,34 @@ variable "default_tags" {
     Contact= "{{author.email}}",
   }
 }
+
+
+variable "ssh_public_key_path" {
+  description = "Public key path"
+  type        = string
+  default     = "{{ssh_public_key_path}}"
+}
+
+variable "ssh_key_algorithm" {
+  description = "Ssh key algorithm to generate keys with"
+  type        = string
+  default     = "{{ssh_key_algorithm}}"
+}
+
+variable "private_key_extension" {
+  description = "Extension of generated private key"
+  type        = string
+  default     = "{{private_key_extension}}"
+}
+
+variable "public_key_extension" {
+  description = "Extension of generated public key"
+  type        = string
+  default     = "{{public_key_extension}}"
+}
+
+variable "chmod_command" {
+  description = "Chmod command"
+  type        = string
+  default     = "{{chmod_command}}"
+}

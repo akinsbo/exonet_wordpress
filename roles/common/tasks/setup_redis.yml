@@ -1,0 +1,23 @@
+# Setup redis for redis caching
+- name: Ensure redis is installed
+  block:
+  - name: Check redis version
+    shell: redis --version
+    register: redis_version
+    ignore_errors: true
+
+  - name: Install redis for redis caching in ansible.cfg for subsquent runs
+    pip:
+      name: redis
+      executable: pip3
+    when: redis_version is search("command not found")
+  delegate_to: 127.0.0.1
+
+- name: Ensure bind-to-localhost is enabled to secure redis
+  become: yes
+  lineinfile:
+      path: /etc/redis/6379.conf
+      create: no
+      state: present
+      regex: '^#bind 127\.0\.0\.1'
+      line: 'bind 127.0.0.1'

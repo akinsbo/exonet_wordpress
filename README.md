@@ -28,4 +28,9 @@ To change the path of execution of the terraform insfrastructure, change the pat
 
 ## Future optimizations
 
-If not t2-micro, consider EBS-optimizing it.
+If not t2-micro, consider EBS-optimizing the instances.
+
+## Design Considerations
+
+Rather than use ec2.py, ec.ini to fetch the inventory dynamically,
+The inventory file is populated using a jq operation on the tfstate file

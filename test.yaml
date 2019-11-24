@@ -1,0 +1,10 @@
+- hosts: localhost
+
+  tasks:
+  - name: Get postgres version. Install if not present
+    shell: postgresql --version
+    register: postgresql_db_version
+
+  - name: Print reg
+    debug:
+      msg: postgresql_db_version

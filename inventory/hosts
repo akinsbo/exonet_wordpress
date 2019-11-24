@@ -1,0 +1,12 @@
+[localhost]
+127.0.0.1
+
+#### BEGIN ANSIBLE MANAGED BLOCK inventory ###
+[webservers]
+3.125.13.45
+
+[webservers:vars]
+ansible_connection=ssh
+ansible_ssh_common_args='-o IdentitiesOnly=yes -o StrictHostkeyChecking=no'
+ansible_user=ubuntu
+#### END ANSIBLE MANAGED BLOCK inventory ###

@@ -1,0 +1,15 @@
+---
+- name: install k3s
+  command:  "curl -sfL https://get.k3s.io | sh -"
+
+
+- name: download Helm
+  command: curl -LO https://git.io/get_helm.sh
+
+- name: Chmod on get_helm.sh
+  file:
+    path: get_helm.sh
+    mode: 700
+
+- name: install  Helm
+  command: ./get_helm.sh

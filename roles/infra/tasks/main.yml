@@ -1,4 +1,7 @@
 ---
+# Uncomment to setup redis for redis caching
+# - import_tasks: setup_redis.yml
+
 - import_tasks: create.yml
   tags: [create]
 

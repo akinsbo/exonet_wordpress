@@ -1,35 +1,68 @@
-- import_tasks: install_terraform.yml
+#  Uncomment to install terraform
+# - import_tasks: install_terraform.yml
 
-# - name: Generate terraform files
-#   template:
-#     src: "{{item.src}}"
-#     dest: "{{item.dest}}"
-#     mode: 0644
-#   with_items:
-#     - { src: '{{role_path}}/templates/variables.tf.j2', dest: '{{terraform_path}}/envs/prod/core/variables.tf' }
-#     - { src: '{{role_path}}/templates/provider.tf.j2', dest: '{{terraform_path}}/provider.tf' }
-#     - { src: '{{role_path}}/templates/main.tf.j2', dest: '{{terraform_path}}/main.tf' }
-#     - { src: '{{role_path}}/templates/prod-main.tf.j2', dest: '{{terraform_path}}//envs/prod/core/main.tf' }
+- name: Generate terraform files
+  template:
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    mode: 0644
+  with_items:
+    - { src: '{{role_path}}/templates/variables.tf.j2', dest: '{{terraform_path}}/envs/prod/core/variables.tf' }
+    - { src: '{{role_path}}/templates/provider.tf.j2', dest: '{{terraform_path}}/provider.tf' }
+    - { src: '{{role_path}}/templates/main.tf.j2', dest: '{{terraform_path}}/main.tf' }
+    - { src: '{{role_path}}/templates/prod-main.tf.j2', dest: '{{terraform_path}}//envs/prod/core/main.tf' }
 
-# - name: Request ansible version
-#   debug:
-#     msg: For terraform module force init to work, please ensure you are running ansible > or = 2.7
+- name: Request ansible version
+  debug:
+    msg: For terraform module force init to work, please ensure you are running ansible > or = 2.7
 
-# - name: Apply terraform files
-#   terraform:
-#     project_path: "{{terraform_path}}"
-#     state: present
-#     force_init: yes
-#   register: myregistered_grep_output
+- name: Apply terraform files
+  terraform:
+    project_path: "{{terraform_path}}"
+    state: present
+    force_init: yes
+  register: myregistered_grep_output
 
-# - name: Set terraform path
-#   set_fact:
-#     host_ip: "{{myregistered_grep_output}}.stdout.module.prod.aws_eip.ip_for_env/files"
+##############start block######################
+# # Uncomment to ec2.py to fetch dynamic inventory
+# - name: |
+#     Ensure ec2.ini is used to get the ip address of the ec2 host.
+#     To use, create a profile in your ./aws/creadentials file called 'prod'.
+#     Add all necessary credentials
+#   block: 
+#     - name: Install boto3
+#       pip:
+#         name: boto
+#         executable: pip3
 
-# # - name: Get terraform output
-# #   debug:
-# #     msg: .outputs.MyOutputName.value
+#     - name: Make ec.py file executable
+#       file:
+#         path: "{{playbook_dir}}/inventory/ec2.py"
+#         mode: a+x
 
-# - name: Get terraform output
-#   debug:
-#     msg: "{{host_ip}}"
+#     - name: Get dynamic inventory
+#       command: "python3 {{playbook_dir}}/inventory/ec2.py --profile prod"
+#       register: ec2_crunchify
+############end block################
+
+- name: Set host ip from statefile
+  set_fact:
+    host_ip: "{{myregistered_grep_output.outputs.public_ip.value.public_ip}}"
+
+- name: Add the newly created EC2 instance(s) to the local host group
+  blockinfile:
+    marker: "#### {mark} ANSIBLE MANAGED BLOCK inventory ###"
+    path: inventory/hosts
+    block: |
+
+            [webservers]
+            {{host_ip}}
+
+            [webservers:vars]
+            ansible_connection=ssh
+            ansible_ssh_common_args='-o IdentitiesOnly=yes -o StrictHostkeyChecking=no'
+            ansible_user=ubuntu
+  delegate_to: 127.0.0.1
+
+- name: Refresh inventory
+  meta: refresh_inventory

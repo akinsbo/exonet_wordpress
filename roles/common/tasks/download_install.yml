@@ -1,0 +1,36 @@
+---
+- name: Download, unzip and install
+  block:
+  - name: Get current user group
+    command: "id -g -n"
+    register: current_user_group
+
+  - name: Print current group user
+    debug:
+      msg: "current_user_group = {{current_user_group.stdout}}"
+
+  - name: "Download, unarchive and install {{module_package}}"
+    unarchive:
+      src: "{{ module_package_url }}"
+      dest: "/usr/local/bin"
+      owner: "{{ansible_user_id}}"
+      group: "{{current_user_group.stdout}}"
+      remote_src: yes
+      force: yes
+  when: "module_package_url | regex_search('(\\.zip$|\\.tar\\.?)')"
+
+- name: Download and install
+  block:
+  - name: "Download and install {{module_package}} when download is not archive"
+    get_url:
+      url: "{{ module_package_url }}"
+      dest: "/usr/local/bin"
+      owner: "{{ansible_user_id}}"
+      group: "{{current_user_group.stdout}}"
+      remote_src: yes
+      force: yes
+      # TODO Add hash check
+  when: "(module_package_url | regex_search('(\\.zip$|\\.tar\\.?)') | length) < 1"
+  #######Variables########
+  # module_linux_url
+  # module_package

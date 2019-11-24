@@ -1,0 +1,16 @@
+---
+- hosts: webservers
+  connection: ssh
+  gather_facts: no
+
+  pre_tasks:
+
+    - name: Wait 300 seconds new server to come up, but only start checking after 60 seconds
+      wait_for_connection:
+        timeout: 300
+    # Gather facts on server
+    - setup:
+
+  roles:
+    - bootstrap_os
+    - k8s

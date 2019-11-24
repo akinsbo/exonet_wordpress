@@ -38,14 +38,3 @@ resource "aws_route_table_association" "rt_assn" {
   subnet_id      = "${aws_subnet.public_subnet.id}"
   route_table_id = "${aws_route_table.public_route_table.id}"
 }
-
-## SSH key-pair to be used to access instances in public subnet
-resource "tls_private_key" "private_key" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
-resource "aws_key_pair" "key_pair" {
-  key_name   = "public_${var.subnet_name}"
-  public_key = "${tls_private_key.private_key.public_key_openssh}"
-}
