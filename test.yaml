@@ -1,10 +1,119 @@
 - hosts: localhost
+  connection: local
 
   tasks:
-  - name: Get postgres version. Install if not present
-    shell: postgresql --version
-    register: postgresql_db_version
 
-  - name: Print reg
+#   - debug:
+#       msg: "{{ users | selectattr('temp_pass', 'defined') | map(attribute='name') | list }}"
+
+#   - debug:
+#       msg: "{{ users | selectattr('name', 'defined')| selectattr('groups', 'search', 'admin') | map(attribute='groups') | list | unique}}"
+
+  - debug:
+      msg: "{{ users | selectattr('groups', 'defined') | list}}"
+
+  - debug:
+      msg: "{{ users | selectattr('groups', 'defined') | map(attribute='groups') | list }}"
+
+
+  - debug:
+      msg: "{{ users | selectattr('groups', 'defined') | map(attribute='groups') | list | flatten | unique}}"
+
+  - set_fact:
+      var1: "{{ users | selectattr('groups', 'defined') | map(attribute='groups') |  list | flatten | unique }}"
+
+  - debug:
+      msg: "{{var1 | join(', ')}}"
+
+  - name: print names where admin search
     debug:
-      msg: postgresql_db_version
+      msg: "{{ users | selectattr('groups', 'defined') | selectattr('groups', 'search', 'admin') | map(attribute='name') | list }}"
+
+  - name: print group for names
+    debug:
+      msg: "{{ users | selectattr('names', 'defined') | selectattr('names', 'search', 'exonet_user') | list }}"
+
+  - name: Print groups records and get type
+    debug:
+      msg: "User is {{ item.value.name }} in groups {{ item.value.groups }} group type {{ item.value.groups | type_debug }}"
+    loop: "{{ lookup('dict', users) }}"
+
+  - name: Print groups records and get type
+    debug:
+      msg: "User group type is {{ (item.value.groups | type_debug == 'list')  | ternary('is list', 'is not-list')}} "
+    loop: "{{ lookup('dict', users) }}"
+
+  # - name: Print groups records and get type
+
+  - name: merge sudo
+    set_fact:
+      sudo_list:
+       - sudo
+
+  # - name: Print groups records and get type
+  #   debug:
+  #     msg: "User groups is/are {{ (admin in item.value.groups | ternary(item.value.groups + sudo | join(','), item.value.groups ) )}} "
+  #   loop: "{{ lookup('dict', users) }}"
+
+  - debug: msg="Append list to list, or merge two lists"
+
+  - name: Setup two lists to be merged
+    set_fact:
+      list_one:
+        - 1
+        - 2
+        - 3
+      list_two:
+        - 4
+        - 5
+        - 6
+
+  - name: Merge the two lists
+    set_fact:
+      lists_merged: "{{ list_one + list_two }}"
+
+  - name: Demonstrate merged lists
+    debug: var=lists_merged
+
+  # - name: Print final list
+  #   debug:
+  #     msg: "User groups is/are {{ 'admin' in item.value.groups | ternary(item.value.groups + sudo_list | join(','), item.value.groups ) )}} "
+  #   loop: "{{ lookup('dict', users) }}"
+
+  # - name: Print final list
+  #   debug:
+  #     msg: "User groups is/are {{ 'admin' == item.value.groups | ternary(item.value.groups, item.value.groups ) }} "
+  #   loop: "{{ lookup('dict', users) }}"
+
+  - name: Print final list
+    debug:
+      msg: "{{ ('admin' in item.value.groups ) | ternary(item.value.groups + sudo_list, item.value.groups) | join(',')}}"
+    loop: "{{ lookup('dict', users) }}"
+
+  # - name: Safety check
+  #   assert:
+  #     that: >
+  #           users | map(attribute='groups') | list | count
+  #           ==
+  #           users | map(attribute='groups') | list | unique | count
+
+  - name: User  values
+    debug:
+      msg: "{{users.values() | list | selectattr('groups', 'defined') | map(attribute='groups') | list | flatten | unique}}"
+    register: the_reg
+
+  - name: The registered
+    debug:
+      msg: "{{the_reg.msg}}"
+
+  # - name: The test item
+  #   become: yes
+  #   file:
+  #     path: try_FILE_two
+  #     state: touch
+
+  - name: Ensure an OpenSSH rsa keypair is tested
+    become: yes
+    openssh_keypair:
+      path: try_ssh.pub
+      size: 4096

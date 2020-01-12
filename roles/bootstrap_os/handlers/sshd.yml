@@ -4,5 +4,4 @@
   service:
     name: sshd
     state: restarted
-  tags:
-    - ssh
+  listen: "Restart sshd"

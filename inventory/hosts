@@ -2,11 +2,13 @@
 127.0.0.1
 
 #### BEGIN ANSIBLE MANAGED BLOCK inventory ###
+
 [webservers]
-3.125.13.45
+3.125.237.125
 
 [webservers:vars]
 ansible_connection=ssh
 ansible_ssh_common_args='-o IdentitiesOnly=yes -o StrictHostkeyChecking=no'
+ansible_ssh_private_key_file=/Users/olaoluakinsete/.ssh/public_keys/exonet/exonet.pem
 ansible_user=ubuntu
 #### END ANSIBLE MANAGED BLOCK inventory ###

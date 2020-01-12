@@ -1,0 +1,53 @@
+---
+  - name: Get list of all users
+    shell: "cut -d: -f1 /etc/passwd"
+    changed_when: false
+    register: current_users_list
+    become: ubuntu
+
+  - name: Ensure all unrequested users are removed
+    user:
+      name: "{{ item }}"
+      state: absent
+      remove: yes
+    loop: "{{ user_mgt.remove }}"
+    when: item in current_users_list.stdout_lines
+
+  - name: Gather and set unique list of groups
+    debug:
+      msg: "{{users.values() | list | selectattr('groups', 'defined') | map(attribute='groups') | list | flatten | unique }}"
+    register: groups_list
+
+  - name: Ensure groups are created
+    become: yes
+    group:
+      name: "{{item}}"
+      state: present
+    loop: "{{groups_list.msg}}"
+
+  - name: Create sudo
+    set_fact:
+      sudo_list:
+       - sudo
+
+  - name: Ensure users are created and added to group. Admin users should also be added to sudo group
+    become: yes
+    user:
+      name: "{{item.value.name}}"
+      groups: "{{ ('admin' in item.value.groups ) | ternary(item.value.groups + sudo_list, item.value.groups) | join(', ')}}"
+      append: yes
+      create_home: yes
+      password: "{{item.value.password}}"
+      state: present
+    loop: "{{ lookup('dict', users) }}"
+    loop_control:
+        label: "{{ item.value.name }}"
+
+  - include_tasks: roles/bootstrap_os/tasks/mng_ssh_key.yml
+    vars:
+      this_user:  "{{ item.value.name }}"
+    loop: "{{ lookup('dict', users) }}"
+    loop_control:
+      label: "{{ item.value.name }}"
+
+  - include_tasks: roles/bootstrap_os/tasks/mng_ssh_conf.yml

@@ -1,3 +1,6 @@
 
-- import_playbook: infra.yaml
-- import_playbook: setup.yaml
+# - name: Setup infrastructure
+#   import_playbook: infra.yaml
+
+- name: Configure infrastructure
+  import_playbook: setup.yaml

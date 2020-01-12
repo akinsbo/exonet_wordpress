@@ -1,0 +1,53 @@
+  - name: Set key dir path
+    set_fact:
+      key_dir: "{{ lookup('env','HOME') + '/.ssh/' ~ ssh_public_key_dir }}"
+
+  - name: Set key path
+    set_fact:
+      key_file_path: "{{ key_dir ~ '/' ~ this_user }}"
+
+  - name: Set public key file path
+    set_fact:
+      public_key_filePath: "{{ key_file_path ~ '.pub' }}"
+
+  - name: Ensure the pub key directory is created
+    become: yes
+    file:
+      path: "{{ key_dir }}"
+      state: directory
+
+  # - name: Ensure key files are created for each user
+  #   become: yes
+  #   file:
+  #     path: "{{item}}"
+  #     state: touch
+  #   loop:
+  #     - "{{public_key_filePath}}"
+  #     - "{{private_key_filePath}}"
+
+  - name: Ensure an OpenSSH rsa keypair is generated and written to the key files with size (4096 bits)
+    become: yes
+    openssh_keypair:
+      path: "{{ key_file_path }}"
+      size: 4096
+
+  # - name: Ensure proper file permissions for key file
+  #   become: yes
+  #   file:
+  #     path: "{{ public_key_filePath }}"
+  #     mode: 600
+
+  - name: Collect the keyfile content
+    become: yes
+    command: "cat {{public_key_filePath}}"
+    register: key
+    no_log: true
+
+  - name: Ensure new users ssh key are placed in remote authorized key folder
+    become: yes
+    authorized_key:
+      user: "{{this_user }}"
+      state: present
+      manage_dir: true
+      key: "{{ key.stdout }}"
+    no_log: true

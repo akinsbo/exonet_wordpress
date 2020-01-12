@@ -34,3 +34,7 @@ If not t2-micro, consider EBS-optimizing the instances.
 
 Rather than use ec2.py, ec.ini to fetch the inventory dynamically,
 The inventory file is populated using a jq operation on the tfstate file
+
+## Note
+
+For easy management, all dynamically generated variables are generated in the role/common/tasks/set_vars directory.

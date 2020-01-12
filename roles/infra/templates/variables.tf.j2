@@ -49,6 +49,12 @@ variable "subnet1_private_sg_cidr" {
   default     = ["{{subnet1.private_sg_cidr}}"]
 }
 
+variable "subnet1_egress_cidr_block" {
+  description = "Security group for public traffic"
+  type        = list(string)
+  default     = ["{{subnet1.egress_cidr_block}}"]
+}
+
 variable "subnet1_cidr" {
   description = "The cidr of the subnet"
   type        = string
@@ -74,11 +80,16 @@ variable "default_tags" {
   }
 }
 
+variable "key_pair_name" {
+  description = "Name of the keypair"
+  type = string
+  default = "{{key_pair_name}}"
+}
 
 variable "ssh_public_key_path" {
   description = "Public key path"
   type        = string
-  default     = "{{ssh_public_key_path}}"
+  default     = "{{ssh_key_path}}"
 }
 
 variable "ssh_key_algorithm" {

@@ -49,6 +49,12 @@ variable "subnet1_private_sg_cidr" {
   default     = ["10.0.1.0/24"]
 }
 
+variable "subnet1_egress_cidr_block" {
+  description = "Security group for public traffic"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
 variable "subnet1_cidr" {
   description = "The cidr of the subnet"
   type        = string
@@ -74,11 +80,16 @@ variable "default_tags" {
   }
 }
 
+variable "key_pair_name" {
+  description = "Name of the keypair"
+  type = string
+  default = "exonet_key"
+}
 
 variable "ssh_public_key_path" {
   description = "Public key path"
   type        = string
-  default     = "~/ssh/public_keys/exonet"
+  default     = "/Users/olaoluakinsete/.ssh/public_keys/exonet/exonet"
 }
 
 variable "ssh_key_algorithm" {
@@ -90,17 +101,17 @@ variable "ssh_key_algorithm" {
 variable "private_key_extension" {
   description = "Extension of generated private key"
   type        = string
-  default     = ".pem"
+  default     = "pem"
 }
 
 variable "public_key_extension" {
   description = "Extension of generated public key"
   type        = string
-  default     = ".pub"
+  default     = "pub"
 }
 
 variable "chmod_command" {
   description = "Chmod command"
   type        = string
-  default     = "600"
+  default     = "0600"
 }

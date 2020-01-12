@@ -1,9 +1,9 @@
 ---
-# Uncomment to setup redis for redis caching
+# # Uncomment to setup redis for redis caching
 # - import_tasks: setup_redis.yml
 
 - import_tasks: create.yml
-  tags: [create]
+  when: infra_action is undefined or action == "create"
 
 - import_tasks: delete.yml
-  tags: [delete, destroy, stop]
+  when: infra_action == "destroy"

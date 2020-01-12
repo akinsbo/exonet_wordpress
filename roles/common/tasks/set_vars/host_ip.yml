@@ -1,0 +1,5 @@
+- name: Set host ip from statefile
+  set_fact:
+    host_ip: "{{myregistered_grep_output_var.outputs.public_ip.value.public_ip}}"
+  tags:
+    - create

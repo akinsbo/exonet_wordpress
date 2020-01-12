@@ -26,10 +26,9 @@ jobs:
       #       echo 'export IMAGE_REPO="$IMAGE_ADDRESS/$APP"' >> $BASH_ENV 
 
 
-      - setup_remote_docker:  
+      - setup_remote_docker:
           version: 18.06.0-ce
           # docker_layer_caching: true 
-          
       # Run a step to setup an environment variable.
       - run: 
           name: "Setup custom environment variables"
@@ -71,11 +70,11 @@ jobs:
           command: |
             cd $CIRCLE_WORKING_DIRECTORY/roles/infra/files 
             "[ -z \"$(terraform fmt -write=false)\" ] || { terraform fmt -write=false -diff; exit 1}"
-          
+
       - run:
           name: Execute Ansible Playbook
           command: |
             cd $CIRCLE_WORKING_DIRECTORY
-            ansible-playbook site.yaml --tags "create" -vvv
-
-            
+            touch .vault_pass.txt
+            echo ${VAULT_PASS} >> .vault_pass.txt
+            ansible-playbook site.yaml --tags "create" -vvv --vault-password-file .vault_pass.txt

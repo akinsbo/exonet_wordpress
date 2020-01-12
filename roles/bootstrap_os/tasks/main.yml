@@ -1,42 +1,34 @@
-
-
   - name: Check python
+    become: yes
     raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
     changed_when: false
 
-  - name: Add SSH public keys
-    authorized_key:
-      user: "{{ item }}"
-      state: present
-      key: "{{ lookup('file', 'keys/{{ item }}') }}"
-    with_items: "{{ required_users }}"
-
-    #  create group
-  - name: Ensure groups admin and developer are created
+  - name: Ensure Aptitude is installed
     become: yes
-    group:
-      name: "{{ item }}"
+    apt:
+      name: aptitude
       state: present
-    with_items: "{{ssh_user.groups}}"
-    tags:
-      - group
 
-  #  create users
+  - name: Ensure packages are upgraded
+    become: yes
+    apt:
+      upgrade: safe
+
+  - name: Remove useless packages from the cache
+    become: yes
+    apt:
+      autoclean: yes
+
+  - name: Remove dependencies that are no longer required
+    become: yes
+    apt:
+      autoremove: yes
+
+  #  create groups and users
   - include_tasks: mng_user.yml
 
-
   #  add ec2 to master group in hosts.ini
-  
+
     #  generate ssh-key for user
-
-  
-  - name: Ensure new user ssh key is placed in remote authorized key folder
-    become: yes
-    authorized_key:
-      user: "{{ssh_user.name}}"
-      state: present
-      manage_dir: true
-      key: "{{ lookup('file','/home/olaolu/.ssh/' ~ my_ssh_user.name ~'.pub')}}"
-
     #  sort ssh-key into the ec2
     #  disable user login

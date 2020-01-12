@@ -1,8 +1,9 @@
 
-author: 
+author:
   name: "Olaolu Akinsete"
   email: "akinsbo@gmail.com"
 
+infra_action: create
 project: "exonet_wordpress"
 
 # Update ami if updating region as AMI is region based
@@ -18,27 +19,93 @@ container:
 subnet1:
   private_sg_cidr: "10.0.1.0/24"
   public_sg_cidr: "0.0.0.0/0"
+  egress_cidr_block: "0.0.0.0/0"
 
 vpc_cidr_block: "10.0.0.0/16"
 
-ssh_user_groups: 
+ssh_user_groups:
   - admin
   - developer
   - exonet_group
 
 ssh_user:
   default_user: ubuntu
-  admin_users: ['exonet_user']
-  developer_users: ['Olaolu', 'Florian']
-  admin_groups: ['admin, exonet_group']
-  developer_groups: ['developer']
+  admin_users:
+    - exonet_user
+  developer_users:
+    - Olaolu
+    - Florian
+  admin_groups:
+    - admin
+    - exonet_group
+  developer_groups:
+    - developer
+  required_users:
+    - exonet_user
+  remove_users:
+    - terrible_user
 
+users:
+  eu01:
+    name: exonet_user
+    authorized:
+      - /tmp/exonet_user/onekey.pub
+      - /tmp/exonet_user/twokey.pub
+    groups:
+      - admin
+      - exonet_group
+    password: wawawiwa
 
-ssh_public_key_path: "~/ssh/public_keys/exonet"
+  admin:
+    name: admin
+    authorized:
+      - /tmp/keys/admin.pub
+    groups:
+      - admin
+    password: wawawiwa
+
+  oa01:
+    name: olaolu
+    authorized:
+      - /tmp/keys/olaolu.pub
+    groups:
+      - developer
+    password: wawawiwa
+
+  fl17:
+    name: florian
+    authorized:
+      - /tmp/keys/florian.pub
+    groups:
+      - developer
+    password: wawawiwa
+
+user_mgt:
+  default: exonet_user
+
+  remove:
+    - terrible_user # e.g remove default ubuntu user
+
+# According to best practice, ssh key to be stored in ~/ssh/{{ssh_public_key_dir}}/{{ssh_public_key_filename}}
+ssh_public_key_dir: public_keys/exonet
+ssh_public_key_filename: exonet
 ssh_key_algorithm: RSA
-private_key_extension: .pem
-public_key_extension: .pub
-chmod_command: 600
+private_key_extension: pem
+public_key_extension: pub
+chmod_command: '0600'
+key_pair_name: "exonet_key"
+
+# SShd config PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via ChallengeResponseAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and ChallengeResponseAuthentication to 'no'.
+sshd:
+  permitroot_login: "no"
+  use_pam: "no"
+  challenge_response_authentication: "no"
+  password_authentication: "no"
 
 terraform:
   aws_provider_version: 2.33

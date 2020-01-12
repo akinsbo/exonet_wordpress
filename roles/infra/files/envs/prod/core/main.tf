@@ -19,10 +19,11 @@ module "subnet_public" {
 module "key" {
   source = "../../../modules/aws/security/key"
 
+  key_pair_name = "${var.key_pair_name}"
   ssh_public_key_path = "${var.ssh_public_key_path}"
   ssh_key_algorithm = "${var.ssh_key_algorithm}"
   private_key_extension = "${var.private_key_extension}"
-  public_key_extension = "${var.private_key_extension}"
+  public_key_extension = "${var.public_key_extension}"
   chmod_command = "${var.chmod_command}"
 }
 
@@ -56,4 +57,5 @@ module "security_groups" {
   sg_name             = "${var.sg_name}"
   subnet_public_cidr  = "${var.subnet1_public_sg_cidr}"
   subnet_private_cidr = "${var.subnet1_private_sg_cidr}"
+  subnet_egress_cidr_block = "${var.subnet1_egress_cidr_block}"
 }
