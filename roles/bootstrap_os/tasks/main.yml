@@ -1,13 +1,13 @@
-  - name: Check python
-    become: yes
-    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
-    changed_when: false
+  # - name: Check python
+  #   become: yes
+  #   raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+  #   changed_when: false
 
-  - name: Ensure Aptitude is installed
-    become: yes
-    apt:
-      name: aptitude
-      state: present
+  # - name: Ensure aptitude is installed
+  #   become: yes
+  #   apt:
+  #     name: aptitude
+  #     state: present
 
   - name: Ensure packages are upgraded
     become: yes
@@ -26,9 +26,3 @@
 
   #  create groups and users
   - include_tasks: mng_user.yml
-
-  #  add ec2 to master group in hosts.ini
-
-    #  generate ssh-key for user
-    #  sort ssh-key into the ec2
-    #  disable user login

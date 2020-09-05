@@ -1,0 +1,17 @@
+- name: Ensure aws exists
+  file:
+    dest: ~/.aws
+    state: directory
+    mode: u=rwx,g=,o=
+
+- name: copy aws config
+  template:
+    src: aws/config
+    dest: ~/.aws/config
+    mode: u=rw,g=,o=
+
+- name: copy aws credentials
+  template:
+    src: aws/credentials
+    dest: ~/.aws/credentials
+    mode: u=rw,g=,o=

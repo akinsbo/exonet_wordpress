@@ -1,7 +1,37 @@
 ---
-- name: install k3s
-  command:  "curl -sfL https://get.k3s.io | sh -"
+- name: Delete k3s if already present
+  become: yes
+  file:
+    path: /usr/local/bin/k3s
+    state: absent
 
+- name: Download k3s binary x64
+  shell: "curl -sfL https://get.k3s.io | sh "
+
+#  when: ( ansible_facts.userspace_architecture == "x86_64" )
+  # when: ( ansible_facts.architecture == "x86_64" )
+
+# - name: Download k3s binary arm64
+#   get_url:
+#       url: https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s-arm64
+#       dest: /usr/local/bin/k3s
+#       owner: root
+#       group: root
+#       mode: 755
+#   when: ( ansible_facts.architecture is search("arm") )
+#           and
+#         ( ansible_facts.userspace_bits == "64" )
+
+# - name: Download k3s binary armhf
+#   get_url:
+#       url: https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s-armhf
+#       dest: /usr/local/bin/k3s
+#       owner: root
+#       group: root
+#       mode: 755
+#   when: ( ansible_facts.architecture is search("arm") )
+#           and
+#         ( ansible_facts.userspace_bits == "32" )
 
 - name: download Helm
   command: curl -LO https://git.io/get_helm.sh
@@ -11,5 +41,23 @@
     path: get_helm.sh
     mode: 700
 
-- name: install  Helm
-  command: ./get_helm.sh
+- name: install Helm
+  become: yes
+  shell: bash get_helm.sh
+
+- name: Install helm chart
+  helm:
+    host: localhost
+    chart:
+      name: nginx-ingress
+      version: 0.4.0
+      source:
+        type: repo
+        location: https://kubernetes-charts.storage.googleapis.com
+    state: present
+    name: my-memcached
+    namespace: default
+
+# run deployment file
+
+# setup ingress

@@ -3,7 +3,7 @@
 # - import_tasks: setup_redis.yml
 
 - import_tasks: create.yml
-  when: infra_action is undefined or action == "create"
+  when: infra_action is undefined or infra_action == "create"
 
 - import_tasks: delete.yml
   when: infra_action == "destroy"

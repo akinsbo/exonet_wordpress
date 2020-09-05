@@ -1,42 +1,58 @@
 ---
 - name: Get Docker version
-  command: docker --version
+  shell: docker --version
   register: docker_version
   ignore_errors: true
 
 - name: Ensure docker version ~> 18.01 is installed
   block:
-  - name: Install aptitude using apt
-    apt:
-      name: aptitude
-      state: latest
-      update_cache: yes
-      force_apt_get: yes
-    when: (docker_version.stdout | regex_search('(\\d+\\.\\d+)') | float < 18 or docker_version is serach("command not found"))
+  # - name: Ensure aptitude is installed
+  #   become: yes
+  #   apt:
+  #     name: aptitude
+  #     state: present
+      # update_cache: yes
+      # force_apt_get: yes
 
   - name: Install required system packages
-    apt: 
-      name: {{ item }}
+    become: yes
+    apt:
+      name: "{{ item }}"
       state: latest
       update_cache: yes
-    loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+    loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'gnupg-agent']
 
   - name: Add Docker GPG apt Key
+    become: yes
     apt_key:
       url: https://download.docker.com/linux/ubuntu/gpg
       state: present
 
   - name: Add Docker Repository
+    become: yes
     apt_repository:
       repo: deb https://download.docker.com/linux/ubuntu bionic stable
       state: present
 
   - name: Update apt and install docker-ce
-    apt: 
+    become: yes
+    apt:
       update_cache: yes
       name: docker-ce
       state: latest
 
-  - name: Install Docker Module for Python
-    pip:
-      name: docker
+  when: docker_version.stdout | regex_search('(\\d+\\.\\d+)') | float  < 18  or docker_version is search('command not found')
+
+- name: Install required system packages for Python env
+  become: yes
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+  loop: [ 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+- name: Install Docker Module for Python
+  become: yes
+  pip:
+    name: docker-py
+    executable: /usr/bin/pip3

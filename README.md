@@ -38,3 +38,13 @@ The inventory file is populated using a jq operation on the tfstate file
 ## Note
 
 For easy management, all dynamically generated variables are generated in the role/common/tasks/set_vars directory.
+
+## Steps
+
+- Create a CI/CD Jenkins deployment
+- Create a dockerfile
+- Place Dockerfile in Repo
+- Install k3s in node
+- Let k3s use dockerfile for deployment
+- Next
+- Blue-Green deployment

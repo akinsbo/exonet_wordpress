@@ -1,27 +1,26 @@
   # Deliberately overambitious effort to show support for Ubuntu-16.04 and Debian-8
-  - name: Show remote host distribution
-    debug:
-      msg: "{{item}}"
-    loop:
-      - "{{ansible_distribution}}-{{ansible_distribution_major_version}}.sshd_config.j2"
-      - "{{ansible_distribution}}.sshd_config.j2"
-      - "default_linux.sshd_config.j2"
+- name: Show remote host distribution
+  debug:
+    msg: "{{item}}"
+  loop:
+    - "{{ansible_distribution}}-{{ansible_distribution_major_version}}.sshd_config.j2"
+    - "{{ansible_distribution}}.sshd_config.j2"
+    - "default_linux.sshd_config.j2"
 
-  - name: Ensure remote host ssh-configuration is safely updated
-    become: yes
-    template:
-      src: "{{item}}"
-      dest: /etc/ssh/sshd_config
-      validate:  /usr/sbin/sshd -t -f %s
-      owner: root
-      group: root
-      mode: 0600
-      backup: yes
-    with_first_found:
-      - "{{ansible_distribution}}-{{ansible_distribution_major_version}}.sshd_config.j2"
-      - "{{ansible_distribution}}.sshd_config.j2"
-      - "default_linux.sshd_config.j2"
+- name: Ensure remote host ssh-configuration is safely updated
+  become: yes
+  template:
+    src: "{{item}}"
+    dest: /etc/ssh/sshd_config
+    validate:  /usr/sbin/sshd -t -f %s
+    owner: root
+    group: root
+    mode: 0600
+    backup: yes
+  with_first_found:
+    - "{{ansible_distribution}}-{{ansible_distribution_major_version}}.sshd_config.j2"
+    - "{{ansible_distribution}}.sshd_config.j2"
+    - "default_linux.sshd_config.j2"
 
-    notify:
-      - Restart sshd
-
+  notify:
+    - restart sshd

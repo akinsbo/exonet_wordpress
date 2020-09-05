@@ -1,0 +1,34 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+  - name: Print file
+    command: "cat test_this.txt"
+
+  # - name: Get python path
+  #   command: "which python3"
+  #   delegate_to: localhost
+  #   register: python_interpreter_path
+
+  # - name: Add the newly created EC2 instance(s) to the local host group
+  #   blockinfile:
+  #     marker: "#### {mark} ANSIBLE MANAGED BLOCK inventory ###"
+  #     path: inventory/hosts
+  #     block: |
+  #             [localhost:vars]
+  #             ansible_python_interpreter= "{{python_interpreter_path.stdout}}"
+  #             ansible_connection=local
+
+  #   delegate_to: 127.0.0.1
+
+  - set_fact:
+      docker_versiont: ""
+
+  # - name: Get Docker version
+  #   shell: docker --version
+  #   register: docker_version
+  #   ignore_errors: true
+
+  - debug:
+      msg: "{{docker_versiont | regex_search('(\\d+\\.\\d+)') | float < 18}}"
+      # msg: (docker_version.stdout | regex_search('(\\d+\\.\\d+)') | float < 18 or docker_version is search("command not found"))

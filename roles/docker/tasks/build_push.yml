@@ -1,4 +1,22 @@
-- name: Ensure Docker Container is built
+
+- name: Ensure Dockerfile is copied to remote server
+  template:
+    src: "{{role_path}}/templates/Dockerfile.j2"
+    dest: "{{dockerfile_path}}"
+    mode: u=rw,g=,o=
+
+- name: Ensure image is built and pushed to a private repo
+  become: yes
+  docker_image:
+    build:
+      path: "{{dockerfile_path | dirname}}"
+      pull: yes
+    name: wordpress_docker_build
+    # name: 628076641390.dkr.ecr.eu-central-1.amazonaws.com/exozet
+    # tag: v1
+    # push: yes
+    source: build
+
     # Pull image specified by variable default_image from the Docker Hub
 - name: Pull default Docker image
   docker_image:

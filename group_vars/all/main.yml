@@ -13,8 +13,10 @@ ami: ami-0cc0a36f626a4fdf5
 container:
   number: 4
   name: docker
-  image: ubuntuz
+  image: nginx-wordpress
   command: sleep 1m
+
+dockerfile_path: /tmp/Dockerfile
 
 subnet1:
   private_sg_cidr: "10.0.1.0/24"
@@ -41,7 +43,7 @@ ssh_user:
   developer_groups:
     - developer
   required_users:
-    - exonet_user
+    - nibss _user
   remove_users:
     - terrible_user
 
@@ -58,24 +60,24 @@ users:
 
   admin:
     name: admin
-    authorized:
-      - /tmp/keys/admin.pub
+    # authorized:
+    #   - /tmp/keys/admin.pub
     groups:
       - admin
     password: wawawiwa
 
   oa01:
     name: olaolu
-    authorized:
-      - /tmp/keys/olaolu.pub
+    # authorized:
+    #   - /tmp/keys/olaolu.pub
     groups:
       - developer
     password: wawawiwa
 
   fl17:
     name: florian
-    authorized:
-      - /tmp/keys/florian.pub
+    # authorized:
+    #   - /tmp/keys/florian.pub
     groups:
       - developer
     password: wawawiwa
@@ -114,3 +116,6 @@ terraform:
 terraform_path: "{{role_path}}/files"
 
 tfstate_backend_path: "{{role_path}}/files/terraform.tfstate"
+
+# k3s
+k3s_version:

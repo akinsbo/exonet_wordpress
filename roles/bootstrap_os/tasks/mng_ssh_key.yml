@@ -2,34 +2,22 @@
     set_fact:
       key_dir: "{{ lookup('env','HOME') + '/.ssh/' ~ ssh_public_key_dir }}"
 
-  - name: Set key path
-    set_fact:
-      key_file_path: "{{ key_dir ~ '/' ~ this_user }}"
-
-  - name: Set public key file path
-    set_fact:
-      public_key_filePath: "{{ key_file_path ~ '.pub' }}"
-
   - name: Ensure the pub key directory is created
     become: yes
     file:
       path: "{{ key_dir }}"
       state: directory
-
-  # - name: Ensure key files are created for each user
-  #   become: yes
-  #   file:
-  #     path: "{{item}}"
-  #     state: touch
-  #   loop:
-  #     - "{{public_key_filePath}}"
-  #     - "{{private_key_filePath}}"
+    loop: "{{ lookup('dict', users) }}"
 
   - name: Ensure an OpenSSH rsa keypair is generated and written to the key files with size (4096 bits)
     become: yes
     openssh_keypair:
-      path: "{{ key_file_path }}"
+      path: "{{ key_dir ~ '/' ~ item.value.name  }}"
       size: 4096
+    loop: "{{ lookup('dict', users) }}"
+    loop_control:
+      label: "{{ item.value.name }}"
+    delegate_to: localhost
 
   # - name: Ensure proper file permissions for key file
   #   become: yes
@@ -37,17 +25,30 @@
   #     path: "{{ public_key_filePath }}"
   #     mode: 600
 
-  - name: Collect the keyfile content
-    become: yes
-    command: "cat {{public_key_filePath}}"
-    register: key
-    no_log: true
-
   - name: Ensure new users ssh key are placed in remote authorized key folder
     become: yes
     authorized_key:
-      user: "{{this_user }}"
+      user: "{{item.value.name}}"
       state: present
       manage_dir: true
-      key: "{{ key.stdout }}"
-    no_log: true
+      exclusive: no
+      key: "{{ lookup('file', key_dir ~ '/' ~ item.value.name ~ '.pub') }}"
+    loop: "{{ lookup('dict', users) }}"
+
+
+# ~/.ssh/config
+# HostName {{ansible.hosts}} # All the hosts
+# User {{item.value.name}}
+# IdentityFile  {{key_dir ~ '/' ~ item.value.name ~ '.pub'}}
+# LogLevel INFO
+# Compression yes
+
+  # - name: Configure SSH server
+  #   template:
+  #     src: sshd_config.j2
+  #     dest: {{role_path}}/files/
+  #     owner: root
+  #     group: root
+  #     mode: 0644
+  #   notify:
+  #     - Restart SSH service

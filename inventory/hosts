@@ -3,8 +3,12 @@
 
 #### BEGIN ANSIBLE MANAGED BLOCK inventory ###
 
+[localhost:vars]
+ansible_python_interpreter= "/usr/local/bin/python3"
+ansible_connection=local
+
 [webservers]
-3.125.237.125
+18.192.47.98
 
 [webservers:vars]
 ansible_connection=ssh

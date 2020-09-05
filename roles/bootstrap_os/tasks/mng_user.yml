@@ -44,10 +44,5 @@
         label: "{{ item.value.name }}"
 
   - include_tasks: roles/bootstrap_os/tasks/mng_ssh_key.yml
-    vars:
-      this_user:  "{{ item.value.name }}"
-    loop: "{{ lookup('dict', users) }}"
-    loop_control:
-      label: "{{ item.value.name }}"
 
   - include_tasks: roles/bootstrap_os/tasks/mng_ssh_conf.yml

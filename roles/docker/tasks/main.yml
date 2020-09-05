@@ -1,4 +1,4 @@
 ---
 - import_tasks: install_docker.yml
 
-# - import_tasks: 
+- import_tasks: build_push.yml

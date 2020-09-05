@@ -117,3 +117,9 @@
     openssh_keypair:
       path: try_ssh.pub
       size: 4096
+
+  - name: Print file
+    command: "cat test_this.txt"
+
+  - debug:
+      msg: "{{ users }}"

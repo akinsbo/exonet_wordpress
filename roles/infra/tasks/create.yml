@@ -50,11 +50,20 @@
 - name: Remove the host keys
   command: "ssh-keygen -R {{host_ip}}"
 
+- name: Get python path
+  command: "which python3"
+  delegate_to: localhost
+  register: python_interpreter_path
+
 - name: Add the newly created EC2 instance(s) to the local host group
   blockinfile:
     marker: "#### {mark} ANSIBLE MANAGED BLOCK inventory ###"
     path: inventory/hosts
     block: |
+
+            [localhost:vars]
+            ansible_python_interpreter= "{{python_interpreter_path.stdout}}"
+            ansible_connection=local
 
             [webservers]
             {{host_ip}}

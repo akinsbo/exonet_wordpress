@@ -1,4 +1,3 @@
-
 # - name: Setup infrastructure
 #   import_playbook: infra.yaml
 
